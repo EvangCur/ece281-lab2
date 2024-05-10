@@ -66,7 +66,7 @@ entity top_basys3 is
 		-- 7-segment display active-low enables (anodes)
 		an      :	out std_logic_vector(3 downto 0);
 		-- Switches
-		sw		:	in  std_logic_vector(3 downto 0):= "0000";
+		sw		:	in  std_logic_vector(3 downto 0):= "1100";
 		-- Buttons
 		btnC	:	in	std_logic := '1'
 	);
