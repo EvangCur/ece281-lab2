@@ -63,39 +63,55 @@ entity top_basys3 is
 	port(
 		-- 7-segment display segments (cathodes CG ... CA)
 		seg		:	out std_logic_vector(6 downto 0);  -- seg(6) = CG, seg(0) = CA
-
 		-- 7-segment display active-low enables (anodes)
 		an      :	out std_logic_vector(3 downto 0);
-
 		-- Switches
-		sw		:	in  std_logic_vector(3 downto 0);
-		
+		sw		:	in  std_logic_vector(3 downto 0):= "0000";
 		-- Buttons
-		btnC	:	in	std_logic
-
+		btnC	:	in	std_logic := '1'
 	);
 end top_basys3;
 
 architecture top_basys3_arch of top_basys3 is 
 	
   -- declare the component of your top-level design unit under test (UUT)
+    component sevenSegDecoder is 
+        port(
+        i_D : in std_logic_vector(3 downto 0);
+        o_S : out std_logic_vector(6 downto 0) 
+        );
+    end component sevenSegDecoder;
 
+ 
 
   -- create wire to connect button to 7SD enable (active-low)
 
-  
+    signal w_7SD_EN_n : std_logic := '0';
+    signal i_D : std_logic_vector(3 downto 0):= (others => '0');
+    signal o_S : std_logic_vector(6 downto 0):= (others => '0');
+
 begin
 	-- PORT MAPS ----------------------------------------
-
+    sevenSegDecoder_inst1 : sevenSegDecoder port map(
+        i_D => sw,
+        o_S => seg
+    );
 	--	Port map: wire your component up to the switches and seven-segment display cathodes
 	-----------------------------------------------------	
-	
-	
-	-- CONCURRENT STATEMENTS ----------------------------
-	
-	-- wire up active-low 7SD anode (active low) to button (active-high)
-	-- display 7SD 0 only when button pushed
-	-- other 7SD are kept off
-	-----------------------------------------------------
-	
+        
+        -- CONCURRENT STATEMENTS ----------------------------
+    w_7SD_EN_n <= not btnC;
+    an  <= (0 => w_7SD_EN_n, others => '1');
+        -- wire up active-low 7SD anode (active low) to button (active-high)
+        -- display 7SD 0 only when button pushed
+        -- other 7SD are kept off
+        -----------------------------------------------------
+
+
+
+	test_process : process 
+	begin
+	    wait for 20 ns;
+	 wait;
+	end process;
 end top_basys3_arch;
